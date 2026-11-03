@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: infinity-quiz-server
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: ADMIN_KEY
+        value: RAM@192002
