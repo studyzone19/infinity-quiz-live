@@ -13,14 +13,18 @@ export default function Admin() {
   const [resetConfirm, setResetConfirm] = useState(false);
   const [actionMessage, setActionMessage] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (pin.trim() === "RAM@192002") {
+    try {
+      setLoading(true);
+      await axios.post(`${API_BASE}/api/admin/login`, { pin: pin.trim() });
       setIsAuthenticated(true);
       setError("");
       fetchData();
-    } else {
-      setError("Incorrect Admin PIN.");
+    } catch (err) {
+      setError(err.response?.data?.error || "Incorrect Admin PIN.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,7 +43,7 @@ export default function Admin() {
   const handleResetScores = async () => {
     try {
       setLoading(true);
-      const res = await axios.post(`${API_BASE}/api/admin/reset`, { adminKey: pin.trim() || "RAM@192002" });
+      const res = await axios.post(`${API_BASE}/api/admin/reset`, { adminKey: pin.trim() });
       setActionMessage(res.data.message || "Scores successfully reset!");
       setResetConfirm(false);
       fetchData();

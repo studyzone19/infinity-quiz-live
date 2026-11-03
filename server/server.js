@@ -97,9 +97,18 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.post("/api/admin/login", (req, res) => {
+  const { pin } = req.body;
+  const expectedKey = process.env.ADMIN_KEY || "admin123";
+  if (pin && pin.trim() === expectedKey) {
+    return res.json({ success: true, message: "Admin authenticated" });
+  }
+  return res.status(401).json({ error: "Incorrect Admin PIN." });
+});
+
 app.post("/api/admin/reset", (req, res) => {
   const { adminKey } = req.body;
-  const expectedKey = process.env.ADMIN_KEY || "RAM@192002";
+  const expectedKey = process.env.ADMIN_KEY || "admin123";
   if (adminKey !== expectedKey) {
     return res.status(403).json({ error: "Invalid admin authorization key." });
   }
